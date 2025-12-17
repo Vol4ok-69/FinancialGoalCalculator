@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
 
 namespace Finance.Models;
 
@@ -32,7 +34,18 @@ public partial class DataBaseContext : DbContext
     public virtual DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=FinancialGoals;Username=postgres;Password=Rntv1103");
+    {
+        string? connString = "";
+        string jsonString = File.ReadAllText("C:\\Users\\ivank\\Desktop\\Учёба\\C#\\FinancialGoalCalculator\\FinancialGoalCalculator\\appsettings.json");
+        using (JsonDocument doc = JsonDocument.Parse(jsonString))
+        {
+            if (doc.RootElement.TryGetProperty("ConnectionString", out JsonElement element))
+            {
+                connString = element.GetString();
+            }
+        }
+        optionsBuilder.UseNpgsql(connString ?? throw new ArgumentException());
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

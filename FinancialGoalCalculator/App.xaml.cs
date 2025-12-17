@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Configuration;
+using System.IO;
+using System.Text.Json;
 using System.Windows;
 
 namespace Finance
@@ -24,9 +26,18 @@ namespace Finance
 
         private static void ConfigureServices(IServiceCollection services)
         {
+            string? connString = "";
+            string jsonString = File.ReadAllText("C:\\Users\\ivank\\Desktop\\Учёба\\C#\\FinancialGoalCalculator\\FinancialGoalCalculator\\appsettings.json");
+            using (JsonDocument doc = JsonDocument.Parse(jsonString))
+            {
+                if (doc.RootElement.TryGetProperty("ConnectionString", out JsonElement element))
+                {
+                    connString = element.GetString();
+                }
+            }
             services.AddDbContext<DataBaseContext>(options =>
             {
-                options.UseNpgsql("Host=localhost;Port=5432;Database=FinancialGoals;Username=postgres;Password=Rntv1103");
+                options.UseNpgsql(connString ?? throw new ArgumentException());
             }, ServiceLifetime.Singleton);
             services.AddSingleton<ISessionService, SessionAdapter>();
             services.AddSingleton<IUserService, UserService>();
