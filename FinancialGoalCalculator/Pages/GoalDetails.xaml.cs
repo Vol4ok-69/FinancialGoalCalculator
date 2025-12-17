@@ -21,6 +21,7 @@ namespace Finance.Pages
 
         private readonly IFinancialGoalService _goalService;
         private int _originalStatusId;
+        private bool _isEditMode = false;
         public GoalDetails(int goalId, IFinancialGoalService goalService)
         {
             InitializeComponent();
@@ -76,16 +77,71 @@ namespace Finance.Pages
         {
             try
             {
-                _goalService.ChangeStatus(CurrentGoal.Id, SelectedStatus.Id);
-                _originalStatusId = SelectedStatus.Id;
+                decimal target = CurrentGoal.TargetAmount;
+                decimal current = CurrentGoal.CurrentAmount;
+
+                if (_isEditMode)
+                {
+                    if (!decimal.TryParse(tbEditTargetAmount.Text.Replace('.', ','), out target))
+                        throw new Exception("Некорректная целевая сумма");
+
+                    if (!decimal.TryParse(tbEditCurrentAmount.Text.Replace('.', ','), out current))
+                        throw new Exception("Некорректная текущая сумма");
+
+                    if (current < 0 || target <= 0)
+                        throw new Exception("Суммы должны быть положительными");
+
+                    _goalService.UpdateGoal(
+                        CurrentGoal.Id,
+                        tbGoalName.Text,
+                        tbGoalDescription.Text,
+                        target,
+                        current,
+                        dpEditDeadline.SelectedDate
+                    );
+
+                    ExitEditMode();
+                }
+
+                if (SelectedStatus.Id != _originalStatusId)
+                {
+                    _goalService.ChangeStatus(CurrentGoal.Id, SelectedStatus.Id);
+                    _originalStatusId = SelectedStatus.Id;
+                }
+
                 btnSave.Visibility = Visibility.Collapsed;
+
+                ReloadGoal();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
         }
+        private void ReloadGoal()
+        {
+            CurrentGoal = _goalService.GetGoalWithDetails(CurrentGoal.Id);
+            DataContext = null;
+            DataContext = this;
+        }
+        private void ExitEditMode()
+        {
+            _isEditMode = false;
 
+            tbGoalName.IsReadOnly = true;
+            tbGoalDescription.IsReadOnly = true;
+            tbEditTargetAmount.IsReadOnly = true;
+            tbEditCurrentAmount.IsReadOnly = true;
+            dpEditDeadline.IsEnabled = false;
+
+            tbGoalName.Background = Brushes.Transparent;
+            tbGoalDescription.Background = Brushes.Transparent;
+            tbEditTargetAmount.Background = Brushes.Transparent;
+            tbEditCurrentAmount.Background = Brushes.Transparent;
+
+            tbGoalName.BorderThickness = new Thickness(0);
+            tbGoalDescription.BorderThickness = new Thickness(0);
+        }
         private void btnAddContribution_Click(object sender, RoutedEventArgs e)
         {
             var input = Microsoft.VisualBasic.Interaction.InputBox(
@@ -113,6 +169,27 @@ namespace Finance.Pages
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        private void btnEdit_Click(object sender, RoutedEventArgs e)
+        {
+            _isEditMode = true;
+
+            tbGoalName.IsReadOnly = false;
+            tbGoalDescription.IsReadOnly = false;
+            tbEditTargetAmount.IsReadOnly = false;
+            tbEditCurrentAmount.IsReadOnly = false;
+            dpEditDeadline.IsEnabled = true;
+
+            tbGoalName.Background = Brushes.White;
+            tbGoalDescription.Background = Brushes.White;
+            tbEditTargetAmount.Background = Brushes.White;
+            tbEditCurrentAmount.Background = Brushes.White;
+
+            tbGoalName.BorderThickness = new Thickness(1);
+            tbGoalDescription.BorderThickness = new Thickness(1);
+
+            btnSave.Visibility = Visibility.Visible;
         }
     }
 }

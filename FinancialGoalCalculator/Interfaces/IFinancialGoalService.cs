@@ -24,4 +24,11 @@ public interface IFinancialGoalService
 
     void DeleteGoal(int goalId);
     void UpdateGoalStatuses();
+    void UpdateGoal(
+    int goalId,
+    string name,
+    string description,
+    decimal targetAmount,
+    decimal currentAmount,
+    DateTime? deadline);
 }

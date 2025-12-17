@@ -198,4 +198,35 @@ public class FinancialGoalService : IFinancialGoalService
 
         _db.SaveChanges();
     }
+
+    public void UpdateGoal(
+        int goalId,
+        string name,
+        string description,
+        decimal targetAmount,
+        decimal currentAmount,
+        DateTime? deadline)
+    {
+        var goal = _db.FinancialGoals
+            .FirstOrDefault(g => g.Id == goalId && g.UserId == _sessionService.CurrentUserId)
+            ?? throw new Exception("Цель не найдена");
+
+        goal.Name = name;
+        goal.Description = description;
+        goal.TargetAmount = targetAmount;
+        goal.CurrentAmount = currentAmount;
+        goal.Deadline = deadline;
+
+        var completed = _db.GoalStatuses.FirstOrDefault(s => s.Name == "Достигнута");
+        var active = _db.GoalStatuses.FirstOrDefault(s => s.Name == "Активна");
+
+        if (completed != null && active != null)
+        {
+            goal.StatusId = goal.CurrentAmount >= goal.TargetAmount
+                ? completed.Id
+                : active.Id;
+        }
+
+        _db.SaveChanges();
+    }
 }
