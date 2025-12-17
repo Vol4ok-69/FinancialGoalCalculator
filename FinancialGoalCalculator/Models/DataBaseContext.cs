@@ -35,8 +35,15 @@ public partial class DataBaseContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        string? connString = "";
-        string jsonString = File.ReadAllText("C:\\Users\\ivank\\Desktop\\Учёба\\C#\\FinancialGoalCalculator\\FinancialGoalCalculator\\appsettings.json");
+        var basePath = AppDomain.CurrentDomain.BaseDirectory;
+        var configPath = Path.Combine(basePath, "appsettings.json");
+
+        if (!File.Exists(configPath))
+            throw new FileNotFoundException("Файл appsettings.json не найден", configPath);
+
+        string jsonString = File.ReadAllText(configPath);
+
+        string? connString = null;
         using (JsonDocument doc = JsonDocument.Parse(jsonString))
         {
             if (doc.RootElement.TryGetProperty("ConnectionString", out JsonElement element))
@@ -44,7 +51,11 @@ public partial class DataBaseContext : DbContext
                 connString = element.GetString();
             }
         }
-        optionsBuilder.UseNpgsql(connString ?? throw new ArgumentException());
+
+        if (string.IsNullOrWhiteSpace(connString))
+            throw new Exception("ConnectionString не найден в appsettings.json");
+
+        optionsBuilder.UseNpgsql(connString);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -26,8 +26,15 @@ namespace Finance
 
         private static void ConfigureServices(IServiceCollection services)
         {
-            string? connString = "";
-            string jsonString = File.ReadAllText("C:\\Users\\ivank\\Desktop\\Учёба\\C#\\FinancialGoalCalculator\\FinancialGoalCalculator\\appsettings.json");
+            var basePath = AppDomain.CurrentDomain.BaseDirectory;
+            var configPath = Path.Combine(basePath, "appsettings.json");
+
+            if (!File.Exists(configPath))
+                throw new FileNotFoundException("Файл appsettings.json не найден", configPath);
+
+            string jsonString = File.ReadAllText(configPath);
+
+            string? connString = null;
             using (JsonDocument doc = JsonDocument.Parse(jsonString))
             {
                 if (doc.RootElement.TryGetProperty("ConnectionString", out JsonElement element))
@@ -35,21 +42,29 @@ namespace Finance
                     connString = element.GetString();
                 }
             }
+
+            if (string.IsNullOrWhiteSpace(connString))
+                throw new Exception("ConnectionString не найден в appsettings.json");
+
             services.AddDbContext<DataBaseContext>(options =>
             {
-                options.UseNpgsql(connString ?? throw new ArgumentException());
+                options.UseNpgsql(connString);
             }, ServiceLifetime.Singleton);
+
             services.AddSingleton<ISessionService, SessionAdapter>();
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<IFinancialGoalService, FinancialGoalService>();
+
             services.AddTransient<Autho>();
             services.AddTransient<Registr>();
             services.AddTransient<MyGoals>();
             services.AddTransient<CreateGoal>();
+
             services.AddSingleton<AuthAndRegistrView>();
             services.AddSingleton<MainView>();
             services.AddSingleton<MainWindow>();
         }
+
 
         protected override void OnStartup(StartupEventArgs e)
         {
