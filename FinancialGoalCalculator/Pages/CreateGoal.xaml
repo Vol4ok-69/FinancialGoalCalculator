@@ -1,0 +1,123 @@
+﻿<Page x:Class="Finance.Pages.CreateGoal"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Finance.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="600" d:DesignWidth="800"
+      Title="Создание финансовой цели"
+      Background="#F4F6F6">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Width="450"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Top"
+                    Margin="0,50,0,50">
+
+            <TextBlock Text="Создание финансовой цели"
+                       FontSize="32"
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,30"/>
+
+            <TextBlock Text="Название цели" FontSize="16" Margin="0,0,0,5"/>
+            <TextBox x:Name="tbName"
+                     Height="35"
+                     FontSize="16"
+                     Padding="5"
+                     Margin="0,0,0,20"/>
+
+            <TextBlock Text="Описание" FontSize="16" Margin="0,0,0,5"/>
+            <TextBox x:Name="tbDescription"
+                     Height="100"
+                     TextWrapping="Wrap"
+                     AcceptsReturn="True"
+                     FontSize="16"
+                     Padding="5"
+                     Margin="0,0,0,20"/>
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,30">
+                <StackPanel Width="200">
+                    <TextBlock Text="Целевая сумма" FontSize="16" Margin="0,0,0,5"/>
+                    <TextBox x:Name="tbTargetAmount"
+                             Height="35"
+                             FontSize="16"
+                             Padding="5"/>
+                    <TextBlock Text="Начальная сумма" FontSize="16" Margin="0,0,0,5"/>
+                    <TextBox x:Name="tbInitialAmount"
+                     Height="35"
+                     FontSize="16"
+                     Padding="5"
+                     Margin="0,0,0,20"/>    
+
+                </StackPanel>
+
+                <StackPanel Width="200" Margin="50,0,0,0">
+                    <TextBlock Text="Дедлайн" FontSize="16" Margin="0,0,0,5"/>
+                    <DatePicker x:Name="dpDeadline"
+                                FontSize="16"
+                                Height="35"/>
+                    <TextBlock Text="Приоритет" FontSize="16" Margin="0,0,0,5"/>
+                    <ComboBox x:Name="cbPriority"
+                      FontSize="16"
+                      Height="35"
+                      SelectedIndex="0"
+                      Margin="0,0,0,20">        
+                        <ComboBoxItem Content="Низкий"/>
+                        <ComboBoxItem Content="Средний"/>
+                        <ComboBoxItem Content="Высокий"/>
+                    </ComboBox>
+                </StackPanel>
+            </StackPanel>
+
+            
+
+            <Separator Margin="0,10,0,20"/>
+
+            <TextBlock Text="План накоплений"
+                       FontSize="20"
+                       FontWeight="SemiBold"
+                       Margin="0,0,0,20"/>
+
+            <TextBlock Text="Категория цели" FontSize="16" Margin="0,0,0,5"/>
+            <ComboBox x:Name="cbCategory"
+                      FontSize="16"
+                      Height="35"
+                      SelectedIndex="0"
+                      Margin="0,0,0,20">
+                <ComboBoxItem Content="Покупка"/>
+                <ComboBoxItem Content="Сбережения"/>
+                <ComboBoxItem Content="Инвестиции"/>
+                <ComboBoxItem Content="Другое"/>
+            </ComboBox>
+
+            <TextBlock Text="Частота пополнений" FontSize="16" Margin="0,0,0,5"/>
+            <ComboBox x:Name="cbFrequency"
+                      FontSize="16"
+                      Height="35"
+                      SelectedIndex="0"
+                      Margin="0,0,0,20">
+                <ComboBoxItem Content="Без плана"/>
+                <ComboBoxItem Content="Ежедневно"/>
+                <ComboBoxItem Content="Еженедельно"/>
+                <ComboBoxItem Content="Ежемесячно"/>
+                <ComboBoxItem Content="Ежегодно"/>
+            </ComboBox>
+
+            <TextBlock Text="Сумма пополнения" FontSize="16" Margin="0,0,0,5"/>
+            <TextBox x:Name="tbPlannedAmount"
+                     Height="35"
+                     FontSize="16"
+                     Padding="5"
+                     Margin="0,0,0,30"/>
+
+            <Button x:Name="btnSaveGoal"
+                    Content="Сохранить цель"
+                    Height="40"
+                    Width="250"
+                    HorizontalAlignment="Center"
+                    Click="BtnSaveGoal_Click"
+                    Style="{StaticResource LightOrangeButton}"/>
+        </StackPanel>
+    </ScrollViewer>
+</Page>
