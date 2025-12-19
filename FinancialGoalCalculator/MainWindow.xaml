@@ -6,6 +6,6 @@
         xmlns:local="clr-namespace:Finance"
         mc:Ignorable="d"
         Title="Калькулятор финансовых целей" Height="500" Width="1000"
-        Icon="/Assets/logo.png">
+        Icon="/Assets/Logo.png">
     <ContentControl x:Name="MainContentHost"/>
 </Window>

@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Assets\logo.png" />
+    <None Remove="Assets\Logo.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,13 +27,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Assets\logo.png" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\Logo.png" />
   </ItemGroup>
 
 </Project>

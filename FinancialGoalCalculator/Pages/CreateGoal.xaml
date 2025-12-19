@@ -96,7 +96,7 @@
                       FontSize="16"
                       Height="35"
                       SelectedIndex="0"
-                      Margin="0,0,0,20">
+                      Margin="0,0,0,20" SelectionChanged="cbFrequency_SelectionChanged">
                 <ComboBoxItem Content="Без плана"/>
                 <ComboBoxItem Content="Ежедневно"/>
                 <ComboBoxItem Content="Еженедельно"/>

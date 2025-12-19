@@ -22,6 +22,7 @@ namespace Finance.Pages
         {
             try
             {
+                cbFrequency_SelectionChanged(null, null);
                 if (string.IsNullOrWhiteSpace(tbName.Text) ||
                     string.IsNullOrWhiteSpace(tbTargetAmount.Text) ||
                     string.IsNullOrWhiteSpace(tbInitialAmount.Text) ||
@@ -77,6 +78,42 @@ namespace Finance.Pages
             cbPriority.SelectedIndex = 0;
             cbCategory.SelectedIndex = 0;
             cbFrequency.SelectedIndex = 0;
+        }
+
+        private void cbFrequency_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(tbName.Text) ||
+                    string.IsNullOrWhiteSpace(tbTargetAmount.Text) ||
+                    string.IsNullOrWhiteSpace(tbInitialAmount.Text))
+            {
+                return;
+            }
+
+            if (!decimal.TryParse(tbTargetAmount.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out var targetAmount) ||
+                    !decimal.TryParse(tbInitialAmount.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out var initialAmount))
+            {
+                return;
+            }
+
+            if (dpDeadline.SelectedDate == null)
+            {
+                return;
+            }
+
+            int frequencyIndex = cbFrequency.SelectedIndex;
+            if (frequencyIndex != -1)
+            {
+                var deadlineDate = dpDeadline.SelectedDate.Value;
+                var today = DateTime.Now;
+                var daysUntilDeadline = (deadlineDate - today).TotalDays;
+
+                if (daysUntilDeadline > 0)
+                {
+                    decimal amountNeeded = targetAmount - initialAmount;
+                    decimal plannedAmountPerPeriod = (decimal)(amountNeeded / (decimal)daysUntilDeadline);
+                    tbPlannedAmount.Text = plannedAmountPerPeriod.ToString("F2", CultureInfo.InvariantCulture);
+                }
+            }
         }
     }
 }
